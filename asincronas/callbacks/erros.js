@@ -2,8 +2,6 @@
 function enviarEmail(corpo, para, callback) {
   // setTimeout é usado para simular um atraso de 3 segundos
   setTimeout(() => {
-
-
     const deuErro = false;
 
     if (deuErro) {
