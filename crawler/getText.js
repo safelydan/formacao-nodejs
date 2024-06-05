@@ -11,11 +11,11 @@ async function getInfo(req, res) {
   const $ = cheerio.load(data);
   const titulo =
     $(".post-title-container").text().replace(/\n/g, "").split(")")[0] + ")";
-  const desc = $("span")
+  const desc = $(".separator")
     .text()
     .replace(/\n/g, "")
     .split(".")
-    .slice(1, 2)
+    .slice(0, 5)
     .join(".");
   const faixas = $(".separator").text().split(":")[1];
   const listaDeFaixas = faixas
@@ -24,13 +24,26 @@ async function getInfo(req, res) {
     .filter(Boolean)
     .map((faixa) => faixa.trim());
 
-  const img = $(".photo").attr(".href");
+    let imgSrc = '';
+    $('a img').each((i, el) => {
+      const src = $(el).attr('src');
+      console.log(`Found image src: ${src}`); // Log de depuração
+
+      if (src && src.includes('i.imgur.com')) {
+        imgSrc = src;
+        return false;  // Para de iterar quando encontrar o link do Imgur
+      }
+      if (src && src.includes('live.staticflickr.com')) {
+        imgSrc = src;
+        return false;  // Para de iterar quando encontrar o link do Flickr
+      }
+    });
 
   const obj = {
     titulo,
     desc,
     listaDeFaixas,
-    img,
+    imgSrc,
   };
 
   console.log(obj);
